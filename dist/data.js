@@ -23,6 +23,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "095657, 095706, 095710",
       "id": "R01",
+      "baseAttributes": {
+        "male": {
+          "Strength": 40,
+          "Intelligence": 40,
+          "Willpower": 30,
+          "Agility": 50,
+          "Speed": 50,
+          "Endurance": 30,
+          "Personality": 30,
+          "Luck": 40
+        },
+        "female": {
+          "Strength": 40,
+          "Intelligence": 40,
+          "Willpower": 50,
+          "Agility": 40,
+          "Speed": 40,
+          "Endurance": 30,
+          "Personality": 30,
+          "Luck": 40
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "A",
+        "label": "Hidden Powers - Races Refined v2.0.1"
+      },
       "page": 5
     },
     {
@@ -45,6 +73,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "095716, 095720",
       "id": "R02",
+      "baseAttributes": {
+        "male": {
+          "Strength": 35,
+          "Intelligence": 45,
+          "Willpower": 50,
+          "Agility": 30,
+          "Speed": 30,
+          "Endurance": 40,
+          "Personality": 40,
+          "Luck": 40
+        },
+        "female": {
+          "Strength": 35,
+          "Intelligence": 45,
+          "Willpower": 50,
+          "Agility": 30,
+          "Speed": 30,
+          "Endurance": 40,
+          "Personality": 40,
+          "Luck": 40
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "A",
+        "label": "Hidden Powers - Races Refined v2.0.1"
+      },
       "page": 5
     },
     {
@@ -71,6 +127,34 @@ window.NEMAS_DATA = {
       ],
       "source": "095725, 095728",
       "id": "R03",
+      "baseAttributes": {
+        "male": {
+          "Strength": 35,
+          "Intelligence": 35,
+          "Willpower": 30,
+          "Agility": 45,
+          "Speed": 40,
+          "Endurance": 30,
+          "Personality": 45,
+          "Luck": 50
+        },
+        "female": {
+          "Strength": 35,
+          "Intelligence": 35,
+          "Willpower": 30,
+          "Agility": 45,
+          "Speed": 40,
+          "Endurance": 30,
+          "Personality": 45,
+          "Luck": 50
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "B",
+        "label": "Hidden Powers - Unlockable Races of Tamriel v1.0.3"
+      },
       "page": 5
     },
     {
@@ -97,6 +181,34 @@ window.NEMAS_DATA = {
       ],
       "source": "095736",
       "id": "R04",
+      "baseAttributes": {
+        "male": {
+          "Strength": 35,
+          "Intelligence": 40,
+          "Willpower": 30,
+          "Agility": 45,
+          "Speed": 40,
+          "Endurance": 30,
+          "Personality": 40,
+          "Luck": 50
+        },
+        "female": {
+          "Strength": 35,
+          "Intelligence": 40,
+          "Willpower": 30,
+          "Agility": 45,
+          "Speed": 40,
+          "Endurance": 30,
+          "Personality": 40,
+          "Luck": 50
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "B",
+        "label": "Hidden Powers - Unlockable Races of Tamriel v1.0.3"
+      },
       "page": 5
     },
     {
@@ -120,6 +232,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "095743, 095746",
       "id": "R05",
+      "baseAttributes": {
+        "male": {
+          "Strength": 40,
+          "Intelligence": 40,
+          "Willpower": 40,
+          "Agility": 40,
+          "Speed": 40,
+          "Endurance": 40,
+          "Personality": 30,
+          "Luck": 40
+        },
+        "female": {
+          "Strength": 40,
+          "Intelligence": 40,
+          "Willpower": 40,
+          "Agility": 40,
+          "Speed": 40,
+          "Endurance": 40,
+          "Personality": 30,
+          "Luck": 40
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "A",
+        "label": "Hidden Powers - Races Refined v2.0.1"
+      },
       "page": 5
     },
     {
@@ -143,6 +283,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "095752, 095756",
       "id": "R06",
+      "baseAttributes": {
+        "male": {
+          "Strength": 35,
+          "Intelligence": 40,
+          "Willpower": 30,
+          "Agility": 45,
+          "Speed": 40,
+          "Endurance": 30,
+          "Personality": 40,
+          "Luck": 50
+        },
+        "female": {
+          "Strength": 35,
+          "Intelligence": 40,
+          "Willpower": 30,
+          "Agility": 45,
+          "Speed": 40,
+          "Endurance": 30,
+          "Personality": 40,
+          "Luck": 50
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "B",
+        "label": "Hidden Powers - Unlockable Races of Tamriel v1.0.3"
+      },
       "page": 6
     },
     {
@@ -166,6 +334,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "095802, 095806",
       "id": "R07",
+      "baseAttributes": {
+        "male": {
+          "Strength": 40,
+          "Intelligence": 35,
+          "Willpower": 40,
+          "Agility": 40,
+          "Speed": 30,
+          "Endurance": 40,
+          "Personality": 45,
+          "Luck": 40
+        },
+        "female": {
+          "Strength": 40,
+          "Intelligence": 35,
+          "Willpower": 40,
+          "Agility": 40,
+          "Speed": 30,
+          "Endurance": 40,
+          "Personality": 45,
+          "Luck": 40
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "B",
+        "label": "Hidden Powers - Unlockable Races of Tamriel v1.0.3"
+      },
       "page": 6
     },
     {
@@ -189,6 +385,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "095815, 095818",
       "id": "R08",
+      "baseAttributes": {
+        "male": {
+          "Strength": 30,
+          "Intelligence": 45,
+          "Willpower": 40,
+          "Agility": 45,
+          "Speed": 40,
+          "Endurance": 30,
+          "Personality": 30,
+          "Luck": 50
+        },
+        "female": {
+          "Strength": 30,
+          "Intelligence": 45,
+          "Willpower": 40,
+          "Agility": 45,
+          "Speed": 40,
+          "Endurance": 30,
+          "Personality": 30,
+          "Luck": 50
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "B",
+        "label": "Hidden Powers - Unlockable Races of Tamriel v1.0.3"
+      },
       "page": 6
     },
     {
@@ -215,6 +439,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "095826, 095830",
       "id": "R09",
+      "baseAttributes": {
+        "male": {
+          "Strength": 30,
+          "Intelligence": 50,
+          "Willpower": 40,
+          "Agility": 40,
+          "Speed": 40,
+          "Endurance": 30,
+          "Personality": 40,
+          "Luck": 40
+        },
+        "female": {
+          "Strength": 30,
+          "Intelligence": 50,
+          "Willpower": 40,
+          "Agility": 40,
+          "Speed": 40,
+          "Endurance": 30,
+          "Personality": 40,
+          "Luck": 40
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "A",
+        "label": "Hidden Powers - Races Refined v2.0.1"
+      },
       "page": 6
     },
     {
@@ -239,6 +491,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "095835, 095839",
       "id": "R10",
+      "baseAttributes": {
+        "male": {
+          "Strength": 50,
+          "Intelligence": 40,
+          "Willpower": 30,
+          "Agility": 40,
+          "Speed": 30,
+          "Endurance": 40,
+          "Personality": 40,
+          "Luck": 40
+        },
+        "female": {
+          "Strength": 50,
+          "Intelligence": 40,
+          "Willpower": 30,
+          "Agility": 40,
+          "Speed": 30,
+          "Endurance": 40,
+          "Personality": 40,
+          "Luck": 40
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "B",
+        "label": "Hidden Powers - Unlockable Races of Tamriel v1.0.3"
+      },
       "page": 6
     },
     {
@@ -263,6 +543,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "095844, 095848",
       "id": "R11",
+      "baseAttributes": {
+        "male": {
+          "Strength": 40,
+          "Intelligence": 40,
+          "Willpower": 30,
+          "Agility": 30,
+          "Speed": 40,
+          "Endurance": 40,
+          "Personality": 50,
+          "Luck": 40
+        },
+        "female": {
+          "Strength": 40,
+          "Intelligence": 40,
+          "Willpower": 30,
+          "Agility": 30,
+          "Speed": 40,
+          "Endurance": 40,
+          "Personality": 50,
+          "Luck": 40
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "A",
+        "label": "Hidden Powers - Races Refined v2.0.1"
+      },
       "page": 7
     },
     {
@@ -286,6 +594,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "095852, 095856",
       "id": "R12",
+      "baseAttributes": {
+        "male": {
+          "Strength": 45,
+          "Intelligence": 30,
+          "Willpower": 30,
+          "Agility": 40,
+          "Speed": 40,
+          "Endurance": 45,
+          "Personality": 30,
+          "Luck": 50
+        },
+        "female": {
+          "Strength": 45,
+          "Intelligence": 30,
+          "Willpower": 30,
+          "Agility": 40,
+          "Speed": 40,
+          "Endurance": 45,
+          "Personality": 30,
+          "Luck": 50
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "B",
+        "label": "Hidden Powers - Unlockable Races of Tamriel v1.0.3"
+      },
       "page": 7
     },
     {
@@ -310,6 +646,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "095901, 095904",
       "id": "R13",
+      "baseAttributes": {
+        "male": {
+          "Strength": 45,
+          "Intelligence": 35,
+          "Willpower": 40,
+          "Agility": 30,
+          "Speed": 30,
+          "Endurance": 50,
+          "Personality": 40,
+          "Luck": 40
+        },
+        "female": {
+          "Strength": 45,
+          "Intelligence": 35,
+          "Willpower": 40,
+          "Agility": 30,
+          "Speed": 30,
+          "Endurance": 50,
+          "Personality": 40,
+          "Luck": 40
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "B",
+        "label": "Hidden Powers - Unlockable Races of Tamriel v1.0.3"
+      },
       "page": 7
     },
     {
@@ -336,6 +700,34 @@ window.NEMAS_DATA = {
       ],
       "source": "095909",
       "id": "R14",
+      "baseAttributes": {
+        "male": {
+          "Strength": 40,
+          "Intelligence": 35,
+          "Willpower": 30,
+          "Agility": 50,
+          "Speed": 40,
+          "Endurance": 30,
+          "Personality": 35,
+          "Luck": 50
+        },
+        "female": {
+          "Strength": 40,
+          "Intelligence": 35,
+          "Willpower": 30,
+          "Agility": 50,
+          "Speed": 40,
+          "Endurance": 30,
+          "Personality": 35,
+          "Luck": 50
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "A",
+        "label": "Hidden Powers - Races Refined v2.0.1"
+      },
       "page": 7
     },
     {
@@ -385,6 +777,34 @@ window.NEMAS_DATA = {
       ],
       "source": "095917, 095921, 095925, 095928, 095931",
       "id": "R15",
+      "baseAttributes": {
+        "male": {
+          "Strength": 40,
+          "Intelligence": 35,
+          "Willpower": 50,
+          "Agility": 30,
+          "Speed": 40,
+          "Endurance": 45,
+          "Personality": 30,
+          "Luck": 40
+        },
+        "female": {
+          "Strength": 40,
+          "Intelligence": 35,
+          "Willpower": 50,
+          "Agility": 30,
+          "Speed": 40,
+          "Endurance": 45,
+          "Personality": 30,
+          "Luck": 40
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "C",
+        "label": "Tamriel_Data.esm original records"
+      },
       "page": 8
     },
     {
@@ -416,6 +836,34 @@ window.NEMAS_DATA = {
       ],
       "source": "095938, 095944",
       "id": "R16",
+      "baseAttributes": {
+        "male": {
+          "Strength": 55,
+          "Intelligence": 25,
+          "Willpower": 45,
+          "Agility": 40,
+          "Speed": 25,
+          "Endurance": 60,
+          "Personality": 20,
+          "Luck": 40
+        },
+        "female": {
+          "Strength": 50,
+          "Intelligence": 30,
+          "Willpower": 45,
+          "Agility": 40,
+          "Speed": 25,
+          "Endurance": 60,
+          "Personality": 20,
+          "Luck": 40
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "C",
+        "label": "Tamriel_Data.esm original records"
+      },
       "page": 8
     },
     {
@@ -447,6 +895,34 @@ window.NEMAS_DATA = {
       ],
       "source": "095949, 095953, 095956",
       "id": "R17",
+      "baseAttributes": {
+        "male": {
+          "Strength": 45,
+          "Intelligence": 40,
+          "Willpower": 30,
+          "Agility": 40,
+          "Speed": 40,
+          "Endurance": 45,
+          "Personality": 30,
+          "Luck": 40
+        },
+        "female": {
+          "Strength": 45,
+          "Intelligence": 40,
+          "Willpower": 30,
+          "Agility": 40,
+          "Speed": 40,
+          "Endurance": 45,
+          "Personality": 30,
+          "Luck": 40
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "C",
+        "label": "Tamriel_Data.esm original records"
+      },
       "page": 8
     },
     {
@@ -470,6 +946,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "100000, 100003",
       "id": "R18",
+      "baseAttributes": {
+        "male": {
+          "Strength": 50,
+          "Intelligence": 30,
+          "Willpower": 40,
+          "Agility": 30,
+          "Speed": 40,
+          "Endurance": 50,
+          "Personality": 30,
+          "Luck": 40
+        },
+        "female": {
+          "Strength": 50,
+          "Intelligence": 30,
+          "Willpower": 40,
+          "Agility": 30,
+          "Speed": 40,
+          "Endurance": 50,
+          "Personality": 30,
+          "Luck": 40
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "A",
+        "label": "Hidden Powers - Races Refined v2.0.1"
+      },
       "page": 8
     },
     {
@@ -493,6 +997,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "100011, 100014",
       "id": "R19",
+      "baseAttributes": {
+        "male": {
+          "Strength": 45,
+          "Intelligence": 30,
+          "Willpower": 50,
+          "Agility": 35,
+          "Speed": 30,
+          "Endurance": 50,
+          "Personality": 30,
+          "Luck": 40
+        },
+        "female": {
+          "Strength": 45,
+          "Intelligence": 30,
+          "Willpower": 50,
+          "Agility": 35,
+          "Speed": 30,
+          "Endurance": 50,
+          "Personality": 30,
+          "Luck": 40
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "A",
+        "label": "Hidden Powers - Races Refined v2.0.1"
+      },
       "page": 9
     },
     {
@@ -518,6 +1050,34 @@ window.NEMAS_DATA = {
       ],
       "source": "100019",
       "id": "R20",
+      "baseAttributes": {
+        "male": {
+          "Strength": 40,
+          "Intelligence": 30,
+          "Willpower": 30,
+          "Agility": 45,
+          "Speed": 40,
+          "Endurance": 40,
+          "Personality": 35,
+          "Luck": 50
+        },
+        "female": {
+          "Strength": 40,
+          "Intelligence": 30,
+          "Willpower": 30,
+          "Agility": 45,
+          "Speed": 40,
+          "Endurance": 40,
+          "Personality": 35,
+          "Luck": 50
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "B",
+        "label": "Hidden Powers - Unlockable Races of Tamriel v1.0.3"
+      },
       "page": 9
     },
     {
@@ -541,6 +1101,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "100027, 100032",
       "id": "R21",
+      "baseAttributes": {
+        "male": {
+          "Strength": 35,
+          "Intelligence": 40,
+          "Willpower": 35,
+          "Agility": 40,
+          "Speed": 35,
+          "Endurance": 35,
+          "Personality": 50,
+          "Luck": 40
+        },
+        "female": {
+          "Strength": 35,
+          "Intelligence": 40,
+          "Willpower": 35,
+          "Agility": 40,
+          "Speed": 35,
+          "Endurance": 35,
+          "Personality": 50,
+          "Luck": 40
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "B",
+        "label": "Hidden Powers - Unlockable Races of Tamriel v1.0.3"
+      },
       "page": 9
     },
     {
@@ -565,6 +1153,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "100036, 100040",
       "id": "R22",
+      "baseAttributes": {
+        "male": {
+          "Strength": 35,
+          "Intelligence": 45,
+          "Willpower": 50,
+          "Agility": 40,
+          "Speed": 40,
+          "Endurance": 30,
+          "Personality": 30,
+          "Luck": 40
+        },
+        "female": {
+          "Strength": 35,
+          "Intelligence": 45,
+          "Willpower": 50,
+          "Agility": 40,
+          "Speed": 40,
+          "Endurance": 30,
+          "Personality": 30,
+          "Luck": 40
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "B",
+        "label": "Hidden Powers - Unlockable Races of Tamriel v1.0.3"
+      },
       "page": 9
     },
     {
@@ -588,6 +1204,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "100045, 100049",
       "id": "R23",
+      "baseAttributes": {
+        "male": {
+          "Strength": 40,
+          "Intelligence": 35,
+          "Willpower": 30,
+          "Agility": 45,
+          "Speed": 45,
+          "Endurance": 45,
+          "Personality": 30,
+          "Luck": 40
+        },
+        "female": {
+          "Strength": 40,
+          "Intelligence": 35,
+          "Willpower": 30,
+          "Agility": 45,
+          "Speed": 45,
+          "Endurance": 45,
+          "Personality": 30,
+          "Luck": 40
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "A",
+        "label": "Hidden Powers - Races Refined v2.0.1"
+      },
       "page": 9
     },
     {
@@ -611,6 +1255,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "100053, 100057",
       "id": "R24",
+      "baseAttributes": {
+        "male": {
+          "Strength": 40,
+          "Intelligence": 40,
+          "Willpower": 30,
+          "Agility": 50,
+          "Speed": 30,
+          "Endurance": 40,
+          "Personality": 40,
+          "Luck": 40
+        },
+        "female": {
+          "Strength": 40,
+          "Intelligence": 40,
+          "Willpower": 30,
+          "Agility": 50,
+          "Speed": 30,
+          "Endurance": 40,
+          "Personality": 40,
+          "Luck": 40
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "B",
+        "label": "Hidden Powers - Unlockable Races of Tamriel v1.0.3"
+      },
       "page": 9
     },
     {
@@ -634,6 +1306,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "100102, 100105",
       "id": "R25",
+      "baseAttributes": {
+        "male": {
+          "Strength": 35,
+          "Intelligence": 50,
+          "Willpower": 40,
+          "Agility": 40,
+          "Speed": 40,
+          "Endurance": 35,
+          "Personality": 30,
+          "Luck": 40
+        },
+        "female": {
+          "Strength": 35,
+          "Intelligence": 50,
+          "Willpower": 40,
+          "Agility": 40,
+          "Speed": 40,
+          "Endurance": 35,
+          "Personality": 30,
+          "Luck": 40
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "B",
+        "label": "Hidden Powers - Unlockable Races of Tamriel v1.0.3"
+      },
       "page": 10
     },
     {
@@ -663,6 +1363,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "100112, 100117",
       "id": "R26",
+      "baseAttributes": {
+        "male": {
+          "Strength": 30,
+          "Intelligence": 40,
+          "Willpower": 45,
+          "Agility": 50,
+          "Speed": 40,
+          "Endurance": 30,
+          "Personality": 35,
+          "Luck": 40
+        },
+        "female": {
+          "Strength": 30,
+          "Intelligence": 40,
+          "Willpower": 45,
+          "Agility": 50,
+          "Speed": 40,
+          "Endurance": 30,
+          "Personality": 35,
+          "Luck": 40
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "C",
+        "label": "Tamriel_Data.esm original records"
+      },
       "page": 10
     },
     {
@@ -691,6 +1419,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "100124, 100132",
       "id": "R27",
+      "baseAttributes": {
+        "male": {
+          "Strength": 35,
+          "Intelligence": 50,
+          "Willpower": 35,
+          "Agility": 50,
+          "Speed": 50,
+          "Endurance": 30,
+          "Personality": 30,
+          "Luck": 30
+        },
+        "female": {
+          "Strength": 35,
+          "Intelligence": 50,
+          "Willpower": 35,
+          "Agility": 50,
+          "Speed": 50,
+          "Endurance": 30,
+          "Personality": 30,
+          "Luck": 30
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "B",
+        "label": "Hidden Powers - Unlockable Races of Tamriel v1.0.3"
+      },
       "page": 10
     },
     {
@@ -714,6 +1470,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "100141, 100144",
       "id": "R28",
+      "baseAttributes": {
+        "male": {
+          "Strength": 30,
+          "Intelligence": 40,
+          "Willpower": 30,
+          "Agility": 50,
+          "Speed": 50,
+          "Endurance": 30,
+          "Personality": 40,
+          "Luck": 40
+        },
+        "female": {
+          "Strength": 30,
+          "Intelligence": 40,
+          "Willpower": 30,
+          "Agility": 50,
+          "Speed": 50,
+          "Endurance": 30,
+          "Personality": 40,
+          "Luck": 40
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "A",
+        "label": "Hidden Powers - Races Refined v2.0.1"
+      },
       "page": 10
     },
     {
@@ -737,6 +1521,34 @@ window.NEMAS_DATA = {
       "notes": [],
       "source": "100149, 100153",
       "id": "R29",
+      "baseAttributes": {
+        "male": {
+          "Strength": 30,
+          "Intelligence": 40,
+          "Willpower": 40,
+          "Agility": 50,
+          "Speed": 50,
+          "Endurance": 40,
+          "Personality": 30,
+          "Luck": 30
+        },
+        "female": {
+          "Strength": 30,
+          "Intelligence": 40,
+          "Willpower": 40,
+          "Agility": 50,
+          "Speed": 50,
+          "Endurance": 40,
+          "Personality": 30,
+          "Luck": 30
+        }
+      },
+      "attributeSource": {
+        "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+        "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+        "code": "B",
+        "label": "Hidden Powers - Unlockable Races of Tamriel v1.0.3"
+      },
       "page": 10
     }
   ],

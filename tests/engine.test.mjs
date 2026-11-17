@@ -26,3 +26,98 @@ test('Serpent unknown drains are flagged rather than guessed',()=>{const r=build
 test('restricted backgrounds produce eligibility warnings',()=>{assert.ok(build({races:'Breton',backgrounds:'Sword-Singer'}).warnings.some(x=>x.includes('requires:')));assert.ok(!build({races:'Redguard',backgrounds:'Sword-Singer'}).warnings.some(x=>x.includes('requires:')));assert.ok(!build({signs:'The Atronach',backgrounds:'Voidscarred Copyist'}).warnings.some(x=>x.includes('requires:')));});
 test('every individual option computes finite nonnegative stats without mutation',()=>{const before=JSON.stringify(D);for(const [k,list]of Object.entries(D))for(const x of list){const r=build({[k]:x.name});for(const n of [...Object.values(r.attrs),...Object.values(r.skills),...Object.values(r.derived)])assert.ok(Number.isFinite(n)&&n>=0,`${x.name}: ${n}`);}assert.equal(JSON.stringify(D),before);});
 test('import validation rejects invalid choice IDs, numbers and modes',()=>{const s=E.sanitize({name:'<img src=x>',base:{Strength:-30,Intelligence:'oops'},skillBase:{Alchemy:20000},choices:{races:'unknown'},rules:{magickaBase:-5,ward:'unknown'},context:{time:'invalid'}},D);assert.equal(s.base.Strength,0);assert.equal(s.base.Intelligence,null);assert.equal(s.skillBase.Alchemy,1000);assert.equal(s.choices.races,'');assert.equal(s.rules.magickaBase,0);assert.equal(s.rules.ward,'unresolved');assert.equal(s.context.time,'day');});
+test('all 29 races match every attribute in the original 31-row Word table',()=>{
+ const source=JSON.parse(fs.readFileSync(new URL('../race-attributes.json',import.meta.url),'utf8').replace(/^\uFEFF/,''));
+ assert.equal(source.rows.length,31);
+ const matched=new Set();
+ for(const race of D.races)for(const sex of ['male','female']){
+  const name=race.name.replace(/[\u2013\u2014]/g,'-').replace(' menu entry',' entry');
+  const row=source.rows.find(x=>x.name.replace(/[\u2013\u2014]/g,'-')===name)||source.rows.find(x=>x.name===name+(sex==='male'?' (M)':' (F)'));
+  assert.ok(row,race.name+' '+sex);matched.add(row.name);
+  assert.deepEqual(E.ATTRS.map(k=>race.baseAttributes[sex][k]),row.values);
+  assert.equal(Object.values(race.baseAttributes[sex]).reduce((a,b)=>a+b),310);
+ }
+ assert.equal(matched.size,31);
+});
+test('selecting Breton fills the baseline and applies birthsign bonuses exactly once',()=>{
+ const s=E.defaultState();s.choices.races='R02';s.choices.signs='S01';assert.equal(E.applyRaceBase(D,s),true);
+ assert.deepEqual(s.base,{Strength:35,Intelligence:45,Willpower:50,Agility:30,Speed:30,Endurance:40,Personality:40,Luck:40});
+ let r=E.calculate(D,s);assert.equal(r.attrs.Intelligence,65);assert.equal(r.derived.Magicka,97.5);assert.equal(r.derived.Health,37.5);
+ E.applyRaceBase(D,s);assert.equal(E.calculate(D,s).attrs.Intelligence,65);
+});
+test('male and female variants load only their documented differences',()=>{
+ const s=E.defaultState();s.choices.races='R01';E.applyRaceBase(D,s);assert.equal(s.base.Willpower,30);assert.equal(s.base.Agility,50);s.sex='female';E.applyRaceBase(D,s);assert.equal(s.base.Willpower,50);assert.equal(s.base.Agility,40);
+ s.choices.races='R16';E.applyRaceBase(D,s);assert.equal(s.base.Strength,50);assert.equal(s.base.Intelligence,30);s.sex='male';E.applyRaceBase(D,s);assert.equal(s.base.Strength,55);assert.equal(s.base.Intelligence,25);
+ s.choices.races='R02';E.applyRaceBase(D,s);const male={...s.base};s.sex='female';E.applyRaceBase(D,s);assert.deepEqual(s.base,male);
+});
+test('switching races replaces manual values, preserves other choices and keeps Khajiit entries distinct',()=>{
+ const s=E.defaultState();s.base.Strength=999;s.baseMode='manual';s.choices.faiths='F01';s.choices.races='R14';E.applyRaceBase(D,s);assert.equal(s.base.Strength,40);assert.equal(s.base.Willpower,30);assert.equal(s.baseMode,'racial');s.choices.races='R15';E.applyRaceBase(D,s);assert.equal(s.base.Willpower,50);assert.equal(s.base.Endurance,45);assert.equal(s.choices.faiths,'F01');s.choices.races='';E.applyRaceBase(D,s);assert.ok(E.ATTRS.every(k=>s.base[k]===null));
+});
+test('saved and imported racial variants round-trip while custom and legacy bases survive',()=>{
+ const s=E.defaultState();s.sex='female';s.choices.races='R16';E.applyRaceBase(D,s);
+ let restored=E.sanitize(JSON.parse(JSON.stringify(s)),D);assert.equal(restored.sex,'female');assert.equal(restored.base.Intelligence,30);assert.equal(restored.baseMode,'racial');
+ s.baseMode='manual';s.base.Strength=62;restored=E.sanitize(s,D);assert.equal(restored.base.Strength,62);assert.equal(restored.baseMode,'manual');
+ delete s.baseMode;delete s.sex;restored=E.sanitize(s,D);assert.equal(restored.base.Strength,62);assert.equal(restored.baseMode,'manual');
+ s.base=Object.fromEntries(E.ATTRS.map(k=>[k,null]));restored=E.sanitize(s,D);assert.equal(restored.base.Strength,55);assert.equal(restored.baseMode,'racial');
+});
+test('Breton Conjuration is 45 as major, 50 with Magic, and 30 as minor',()=>{
+ const r=build({races:'Breton'},s=>{E.applyRaceBase(D,s);E.setClassSelection(s,'major',0,'Conjuration');});
+ assert.equal(r.skills.Conjuration,45);assert.equal(r.mods.filter(m=>m.key==='Conjuration'&&m.record==='CLASS').length,1);
+ assert.equal(build({races:'Breton'},s=>{E.applyRaceBase(D,s);E.setClassSelection(s,'major',0,'Conjuration');s.characterClass.specialization='Magic';}).skills.Conjuration,50);
+ assert.equal(build({races:'Breton'},s=>E.setClassSelection(s,'minor',0,'Conjuration')).skills.Conjuration,30);
+});
+test('favoured attributes add ten each and propagate to Health, Fatigue and carry capacity',()=>{
+ const r=build({races:'Breton'},s=>{E.applyRaceBase(D,s);E.setClassSelection(s,'favoured',0,'Strength');E.setClassSelection(s,'favoured',1,'Endurance');});
+ assert.equal(r.attrs.Strength,45);assert.equal(r.attrs.Endurance,50);assert.equal(r.derived.Health,47.5);assert.equal(r.derived.Fatigue,175);assert.equal(r.derived['Carry capacity'],225);
+});
+test('favoured Intelligence combines with birthsign and race Magicka multiplier',()=>{
+ const r=build({races:'Breton',signs:'The Apprentice'},s=>{E.applyRaceBase(D,s);E.setClassSelection(s,'favoured',0,'Intelligence');});
+ assert.equal(r.attrs.Intelligence,75);assert.equal(r.derived.Magicka,112.5);
+});
+test('the 27 standard skills have exactly one specialisation and Bardcraft has none',()=>{
+ const all=Object.values(E.SPECIALIZATIONS).flat();assert.equal(all.length,27);assert.equal(new Set(all).size,27);assert.deepEqual([...all].sort(),[...E.CLASS_SKILLS].sort());
+ for(const [group,skills]of Object.entries(E.SPECIALIZATIONS)){
+  const r=build({},s=>s.characterClass.specialization=group);
+  for(const k of E.CLASS_SKILLS)assert.equal(r.skills[k],skills.includes(k)?10:5,group+' '+k);
+  assert.equal(r.skills.Bardcraft,5);
+ }
+ assert.ok(E.SPECIALIZATIONS.Magic.includes('Unarmored'));assert.ok(E.SPECIALIZATIONS.Combat.includes('Athletics'));assert.ok(E.SPECIALIZATIONS.Stealth.includes('Acrobatics'));
+});
+test('duplicate attributes and overlapping major/minor skills are rejected without changing state',()=>{
+ const s=E.defaultState();assert.ok(E.setClassSelection(s,'favoured',0,'Luck'));assert.equal(E.setClassSelection(s,'favoured',1,'Luck'),false);assert.equal(s.characterClass.favoured[1],'');
+ assert.ok(E.setClassSelection(s,'major',0,'Conjuration'));assert.equal(E.setClassSelection(s,'minor',0,'Conjuration'),false);assert.equal(E.setClassSelection(s,'major',1,'Conjuration'),false);
+ assert.equal(E.setClassSelection(s,'major',5,'Alchemy'),false);assert.equal(E.setClassSelection(s,'minor',0,'Bardcraft'),false);
+ assert.ok(E.setClassSelection(s,'major',0,''));assert.ok(E.setClassSelection(s,'minor',0,'Conjuration'));
+});
+test('changing a class skill or favoured attribute removes the previous bonus',()=>{
+ const s=E.defaultState();s.base=Object.fromEntries(E.ATTRS.map(k=>[k,40]));E.setClassSelection(s,'major',0,'Conjuration');E.setClassSelection(s,'favoured',0,'Strength');
+ E.setClassSelection(s,'major',0,'Alchemy');E.setClassSelection(s,'favoured',0,'Intelligence');const r=E.calculate(D,s);
+ assert.equal(r.skills.Conjuration,5);assert.equal(r.skills.Alchemy,30);assert.equal(r.attrs.Strength,40);assert.equal(r.attrs.Intelligence,50);
+});
+test('class completeness requires one specialisation, two attributes and five distinct skills in each group',()=>{
+ const s=E.defaultState();assert.equal(E.calculate(D,s).classInfo.complete,false);
+ s.characterClass.favoured=['Strength','Endurance'];s.characterClass.major=E.CLASS_SKILLS.slice(0,5);s.characterClass.minor=E.CLASS_SKILLS.slice(5,10);
+ assert.equal(E.calculate(D,s).classInfo.complete,false);s.characterClass.specialization='Combat';const r=E.calculate(D,s);assert.equal(r.classInfo.complete,true);assert.deepEqual(r.classInfo.counts,{favoured:2,major:5,minor:5});
+});
+test('class choices survive race changes without copying bonuses into the racial base',()=>{
+ const s=E.defaultState();s.choices.races='R02';E.applyRaceBase(D,s);E.setClassSelection(s,'favoured',0,'Intelligence');E.setClassSelection(s,'major',0,'Conjuration');
+ s.choices.races='R18';E.applyRaceBase(D,s);assert.equal(s.base.Intelligence,30);assert.equal(E.calculate(D,s).attrs.Intelligence,40);assert.equal(E.calculate(D,s).skills.Conjuration,30);
+ s.choices.races='R02';E.applyRaceBase(D,s);assert.equal(s.base.Intelligence,45);assert.equal(E.calculate(D,s).skills.Conjuration,45);
+});
+test('custom class bonuses are explicit and original constraints still apply last',()=>{
+ const r=build({races:'Breton'},s=>{E.setClassSelection(s,'major',0,'Conjuration');s.characterClass.bonuses.major=20;});assert.equal(r.skills.Conjuration,40);
+ const lucky=build({backgrounds:'Lucky'},s=>{E.setClassSelection(s,'major',0,'Conjuration');E.setClassSelection(s,'favoured',0,'Intelligence');});assert.equal(lucky.skills.Conjuration,5);assert.equal(lucky.attrs.Intelligence,10);
+});
+test('class import sanitizes duplicates, custom skill injections, malformed bonuses and oversized lists',()=>{
+ const s=E.sanitize({characterClass:{name:'A'.repeat(100),specialization:'Other',favoured:['Luck','Luck','Strength'],major:['Conjuration','Conjuration','Bardcraft','Alchemy','Sneak','Block'],minor:['Alchemy','Block','Bogus'],bonuses:{major:-10,minor:Infinity,specialization:'oops'}}},D);
+ assert.equal(s.characterClass.name.length,60);assert.equal(s.characterClass.specialization,'');assert.deepEqual(s.characterClass.favoured,['Luck','']);assert.deepEqual(s.characterClass.major,['Conjuration','','','Alchemy','Sneak']);assert.deepEqual(s.characterClass.minor,['','Block','','','']);assert.deepEqual(s.characterClass.bonuses,{major:0,minor:10,specialization:5});
+});
+test('class, specialisation and custom rules survive serialization while legacy builds acquire an empty class',()=>{
+ const s=E.defaultState();s.characterClass.name='Ash scholar';s.characterClass.specialization='Magic';E.setClassSelection(s,'favoured',0,'Intelligence');E.setClassSelection(s,'major',0,'Conjuration');s.characterClass.bonuses.minor=12;
+ const restored=E.sanitize(JSON.parse(JSON.stringify(s)),D);assert.deepEqual(restored.characterClass,s.characterClass);
+ const legacy={...s};delete legacy.characterClass;legacy.skillBase.Alchemy=32;const migrated=E.sanitize(legacy,D);assert.deepEqual(migrated.characterClass,E.defaultClass());assert.equal(migrated.skillBase.Alchemy,32);
+});
+test('class modifications have complete ledger provenance and do not mutate data or state',()=>{
+ const s=E.defaultState();E.setClassSelection(s,'favoured',0,'Luck');E.setClassSelection(s,'major',0,'Conjuration');s.characterClass.specialization='Magic';const before=JSON.stringify(s),dataBefore=JSON.stringify(D);const r=E.calculate(D,s);
+ assert.equal(r.lines.filter(x=>x.record==='CLASS').length,11);assert.ok(r.lines.filter(x=>x.record==='CLASS').every(x=>x.applied));assert.equal(r.classInfo.record.url,E.CLASS_RULES_SOURCE);assert.equal(JSON.stringify(s),before);assert.equal(JSON.stringify(D),dataBefore);
+});

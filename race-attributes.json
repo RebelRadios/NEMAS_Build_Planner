@@ -1,0 +1,456 @@
+{
+  "document": "NEMAS_Morrowind_Starting_Racial_Attributes.docx",
+  "date": "2026-11-16",
+  "status": "Source-grounded provisional baseline; not verified against the installed winning race records.",
+  "attributeOrder": [
+    "Strength",
+    "Intelligence",
+    "Willpower",
+    "Agility",
+    "Speed",
+    "Endurance",
+    "Personality",
+    "Luck"
+  ],
+  "sources": {
+    "A": "Hidden Powers - Races Refined v2.0.1",
+    "C": "Tamriel_Data.esm original records",
+    "B": "Hidden Powers - Unlockable Races of Tamriel v1.0.3"
+  },
+  "rows": [
+    {
+      "name": "Argonian (M)",
+      "values": [
+        40,
+        40,
+        30,
+        50,
+        50,
+        30,
+        30,
+        40
+      ],
+      "source": "A"
+    },
+    {
+      "name": "Argonian (F)",
+      "values": [
+        40,
+        40,
+        50,
+        40,
+        40,
+        30,
+        30,
+        40
+      ],
+      "source": "A"
+    },
+    {
+      "name": "Breton",
+      "values": [
+        35,
+        45,
+        50,
+        30,
+        30,
+        40,
+        40,
+        40
+      ],
+      "source": "A"
+    },
+    {
+      "name": "Cat Elf",
+      "values": [
+        35,
+        35,
+        30,
+        45,
+        40,
+        30,
+        45,
+        50
+      ],
+      "source": "B"
+    },
+    {
+      "name": "Cat-Man",
+      "values": [
+        35,
+        40,
+        30,
+        45,
+        40,
+        30,
+        40,
+        50
+      ],
+      "source": "B"
+    },
+    {
+      "name": "Dark Elf",
+      "values": [
+        40,
+        40,
+        40,
+        40,
+        40,
+        40,
+        30,
+        40
+      ],
+      "source": "A"
+    },
+    {
+      "name": "Demi-khajiit",
+      "values": [
+        35,
+        40,
+        30,
+        45,
+        40,
+        30,
+        40,
+        50
+      ],
+      "source": "B"
+    },
+    {
+      "name": "Duadri",
+      "values": [
+        40,
+        35,
+        40,
+        40,
+        30,
+        40,
+        45,
+        40
+      ],
+      "source": "B"
+    },
+    {
+      "name": "Ghost Cat",
+      "values": [
+        30,
+        45,
+        40,
+        45,
+        40,
+        30,
+        30,
+        50
+      ],
+      "source": "B"
+    },
+    {
+      "name": "High Elf",
+      "values": [
+        30,
+        50,
+        40,
+        40,
+        40,
+        30,
+        40,
+        40
+      ],
+      "source": "A"
+    },
+    {
+      "name": "Ilmga",
+      "values": [
+        50,
+        40,
+        30,
+        40,
+        30,
+        40,
+        40,
+        40
+      ],
+      "source": "B"
+    },
+    {
+      "name": "Imperial",
+      "values": [
+        40,
+        40,
+        30,
+        30,
+        40,
+        40,
+        50,
+        40
+      ],
+      "source": "A"
+    },
+    {
+      "name": "Jaguar Man",
+      "values": [
+        45,
+        30,
+        30,
+        40,
+        40,
+        45,
+        30,
+        50
+      ],
+      "source": "B"
+    },
+    {
+      "name": "Keptu-Quey",
+      "values": [
+        45,
+        35,
+        40,
+        30,
+        30,
+        50,
+        40,
+        40
+      ],
+      "source": "B"
+    },
+    {
+      "name": "Khajiit — first entry",
+      "values": [
+        40,
+        35,
+        30,
+        50,
+        40,
+        30,
+        35,
+        50
+      ],
+      "source": "A"
+    },
+    {
+      "name": "Khajiit — second entry",
+      "values": [
+        40,
+        35,
+        50,
+        30,
+        40,
+        45,
+        30,
+        40
+      ],
+      "source": "C"
+    },
+    {
+      "name": "Malahk Orc (M)",
+      "values": [
+        55,
+        25,
+        45,
+        40,
+        25,
+        60,
+        20,
+        40
+      ],
+      "source": "C"
+    },
+    {
+      "name": "Malahk Orc (F)",
+      "values": [
+        50,
+        30,
+        45,
+        40,
+        25,
+        60,
+        20,
+        40
+      ],
+      "source": "C"
+    },
+    {
+      "name": "Naga",
+      "values": [
+        45,
+        40,
+        30,
+        40,
+        40,
+        45,
+        30,
+        40
+      ],
+      "source": "C"
+    },
+    {
+      "name": "Nord",
+      "values": [
+        50,
+        30,
+        40,
+        30,
+        40,
+        50,
+        30,
+        40
+      ],
+      "source": "A"
+    },
+    {
+      "name": "Orc",
+      "values": [
+        45,
+        30,
+        50,
+        35,
+        30,
+        50,
+        30,
+        40
+      ],
+      "source": "A"
+    },
+    {
+      "name": "Panther Man",
+      "values": [
+        40,
+        30,
+        30,
+        45,
+        40,
+        40,
+        35,
+        50
+      ],
+      "source": "B"
+    },
+    {
+      "name": "Quey Elf",
+      "values": [
+        35,
+        40,
+        35,
+        40,
+        35,
+        35,
+        50,
+        40
+      ],
+      "source": "B"
+    },
+    {
+      "name": "Reachman",
+      "values": [
+        35,
+        45,
+        50,
+        40,
+        40,
+        30,
+        30,
+        40
+      ],
+      "source": "B"
+    },
+    {
+      "name": "Redguard",
+      "values": [
+        40,
+        35,
+        30,
+        45,
+        45,
+        45,
+        30,
+        40
+      ],
+      "source": "A"
+    },
+    {
+      "name": "Riverfolk",
+      "values": [
+        40,
+        40,
+        30,
+        50,
+        30,
+        40,
+        40,
+        40
+      ],
+      "source": "B"
+    },
+    {
+      "name": "Sea Elf",
+      "values": [
+        35,
+        50,
+        40,
+        40,
+        40,
+        35,
+        30,
+        40
+      ],
+      "source": "B"
+    },
+    {
+      "name": "Tsaesci",
+      "values": [
+        30,
+        40,
+        45,
+        50,
+        40,
+        30,
+        35,
+        40
+      ],
+      "source": "C"
+    },
+    {
+      "name": "Wild Elf",
+      "values": [
+        35,
+        50,
+        35,
+        50,
+        50,
+        30,
+        30,
+        30
+      ],
+      "source": "B"
+    },
+    {
+      "name": "Wood Elf",
+      "values": [
+        30,
+        40,
+        30,
+        50,
+        50,
+        30,
+        40,
+        40
+      ],
+      "source": "A"
+    },
+    {
+      "name": "Ynesai",
+      "values": [
+        30,
+        40,
+        40,
+        50,
+        50,
+        40,
+        30,
+        30
+      ],
+      "source": "B"
+    }
+  ]
+}

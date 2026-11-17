@@ -4,6 +4,10 @@ A static, dependency-free character planner built from Edition III of the NEMAS 
 
 ## Included
 
+- Prominent custom class builder: class name, specialisation, two distinct favoured attributes, five major and five minor skills. Duplicate skills across the two groups are prevented.
+- Standard class bonuses: favoured attributes +10, major skills +25, minor skills +10, specialisation +5. The three skill bonuses are editable for verified NEMAS adjustments.
+- Class choices are included in autosave, export/import, skill breakdowns, the effects ledger and derived stats.
+
 - 29 races, 13 birthsigns, 81 lineages, 89 backgrounds, 80 faiths, and 67 optional cultures.
 - Editable base attributes and skills, calculated Health / Magicka / Fatigue / carry capacity, and sourced effect totals.
 - Independent absorption and Reflect rolls, with a clearly labelled additive override.
@@ -13,15 +17,23 @@ A static, dependency-free character planner built from Edition III of the NEMAS 
 
 ## Calculation boundaries
 
-The compendium does not include racial starting attributes or the complete NEMAS engine configuration. Attributes start empty. Skills start at an explicitly labelled planning baseline of 5. The example button supplies 40s, not racial presets.
+The racial starting attributes document supplies provisional baselines for all 29 menu entries. Choosing a race automatically loads its eight base attributes; Argonian and Malahk Orc offer male/female variants. Other races use the same values for both. The two Khajiit entries remain separate. Values remain editable for in-game corrections; class bonuses are applied separately; Restore race values resets them. Choosing another race or variant replaces manual edits. Saved/imported custom bases are preserved. Skills still start at an explicitly labelled planning baseline of 5. Full NEMAS engine configuration remains unspecified.
 
 Derived formulas and stacking assumptions are editable on the Calculation rules tab. Creation Health excludes temporary/environmental attribute changes, while direct Health buffs are included. No level progression is inferred. Maximum Magicka percentages are interpreted as additive INT multipliers. Ward's ambiguous +2x effect remains unresolved until an interpretation is selected.
 
 Unspecified magnitudes, shuffled/random stats and undefined skill groups remain visible in the ledger and calculation notes; they are never assigned invented values. Numeric totals for those builds can be incomplete. Background sets/caps apply last; script ordering is not documented by the source. Racial timed effects are treated as activated when their spell type is absent. Culture assumes faithful adherence. Eligibility checks warn without hiding options.
 
-`dist/data.js` contains the full audited data and source-page mapping. `prepare-data.mjs` regenerates it from the compendium's workspace source and copies the PDF. Editing source data requires regeneration and rerunning tests. Engine logic is isolated in `dist/engine.js`; UI code lives in `dist/app.js` and `dist/style.css`.
+`race-attributes.json` preserves all 31 rows extracted from NEMAS_Morrowind_Starting_Racial_Attributes.docx, in its original attribute order, with provenance. `dist/data.js` contains the full audited data, racial presets and source-page mapping. `prepare-data.mjs` regenerates it from the compendium's workspace source and copies the PDF. Editing source data requires regeneration and rerunning tests. Engine logic is isolated in `dist/engine.js`; UI code lives in `dist/app.js`, `dist/class-ui.js` and `dist/style.css`.
 
 No account, external API, application framework, server-side database or build dependency is required. Google Fonts is optional; local Georgia/Segoe UI fallbacks preserve usability offline. Exported builds contain choices, input values, assumptions and a calculated summary.
+
+## Class sources and assumptions
+
+Standard class bonuses are documented by https://openmw.readthedocs.io/en/stable/manuals/openmw-cs/tables-characters.html#classes . The 27 standard skills are eligible for major/minor selection; Bardcraft is retained as a custom skill outside the class selection pool. Specialisation applies to all nine skills in its category, including miscellaneous skills. Base skills remain 5 unless manually edited. Partial class selections are allowed as a visibly incomplete draft.
+
+Breton Conjuration: 5 base + 15 racial + 25 major = 45; Magic adds 5 for 50.
+
+Legacy saved builds retain their custom base values and receive an empty class. If a class bonus was previously entered manually in a base field, remove it before selecting the same bonus in the class builder to avoid double counting.
 
 ## Verification
 

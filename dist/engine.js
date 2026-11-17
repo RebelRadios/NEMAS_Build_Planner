@@ -5,6 +5,29 @@ const SKILLS=['Block','Armorer','Medium Armor','Heavy Armor','Blunt Weapon','Lon
 const WEAPONS=['Blunt Weapon','Long Blade','Axe','Spear','Short Blade','Marksman','Hand-to-Hand'];
 const ARMOR=['Light Armor','Medium Armor','Heavy Armor'];
 const STEALTH=['Security','Sneak','Acrobatics','Light Armor','Short Blade','Marksman','Mercantile','Speechcraft','Hand-to-Hand'];
+const CLASS_SKILLS=SKILLS.filter(k=>k!=='Bardcraft');
+const SPECIALIZATIONS={Combat:CLASS_SKILLS.slice(0,9),Magic:CLASS_SKILLS.slice(9,18),Stealth:CLASS_SKILLS.slice(18,27)};
+const CLASS_RULES_SOURCE='https://openmw.readthedocs.io/en/stable/manuals/openmw-cs/tables-characters.html#classes';
+function defaultClass(){return {name:'Custom class',specialization:'',favoured:['',''],major:Array(5).fill(''),minor:Array(5).fill(''),bonuses:{major:25,minor:10,specialization:5}};}
+function sanitizeClass(input){
+ const c=defaultClass();if(!input||typeof input!=='object')return c;
+ if(typeof input.name==='string')c.name=input.name.slice(0,60);
+ if(Object.hasOwn(SPECIALIZATIONS,input.specialization))c.specialization=input.specialization;
+ const usedAttributes=new Set(),usedSkills=new Set();
+ for(const group of ['favoured','major','minor']){
+  const allowed=group==='favoured'?ATTRS:CLASS_SKILLS,used=group==='favoured'?usedAttributes:usedSkills;
+  for(let i=0;i<c[group].length;i++){const k=input[group]?.[i];if(allowed.includes(k)&&!used.has(k)){c[group][i]=k;used.add(k);}}
+ }
+ for(const k of Object.keys(c.bonuses)){const v=input.bonuses?.[k];if(v!==null&&v!==''&&Number.isFinite(Number(v)))c.bonuses[k]=Math.max(0,Math.min(100,Number(v)));}
+ return c;
+}
+function setClassSelection(state,group,index,value){
+ const c=sanitizeClass(state.characterClass);
+ if(!['favoured','major','minor'].includes(group)||!Number.isInteger(index)||index<0||index>=c[group].length)return false;
+ if(value&&!((group==='favoured'?ATTRS:CLASS_SKILLS).includes(value)))return false;
+ for(const g of group==='favoured'?['favoured']:['major','minor'])if(c[g].some((k,i)=>value&&k===value&&(g!==group||i!==index)))return false;
+ c[group][index]=value;state.characterClass=c;return true;
+}
 const EFFECTS=['Health','Magicka','Fatigue','Attack','Spell Absorption','Reflect','Sanctuary','Feather','Burden','Swift Swim','Jump','SlowFall','Night Eye','Light','Blind','Sound','Detect Animal','Detect Creature','Detect Enchantment','Detect Key','Fire Shield','Frost Shield','Lightning Shield','Shield','Resist Poison','Resist Common Disease','Resist Blight Disease','Resist Fire','Resist Frost','Resist Shock','Resist Magicka','Resist Normal Weapons','Resist Paralysis','Weakness to Poison','Weakness to Common Disease','Weakness to Blight Disease','Weakness to Fire','Weakness to Frost','Weakness to Shock','Weakness to Magicka','Restore Health','Restore Fatigue','Restore Magicka',...ATTRS.map(a=>'Restore '+a),'Reputation','Gold','Bounty'];
 function canonical(s){s=s.trim().replace(/^(?:to )/i,'').replace(/ skill$/i,'').replace(/^Fortify /i,'').replace(/Diseases/gi,'Disease').replace(/^Max(?:imum)? HP$/i,'Health').replace(/^Max(?:imum)? Health$/i,'Health').replace(/^Max Magicka$/i,'Maximum Magicka').replace(/^Blunt Weapons$/i,'Blunt Weapon').replace(/^Hand[ -]to[ -]Hand$/i,'Hand-to-Hand').replace(/^Weaponless combat$/i,'Hand-to-Hand').replace(/^Reflect Spells$/i,'Reflect').replace(/^Poison Resist(?:ance)?$/i,'Resist Poison').replace(/^Paralysis Resistance$/i,'Resist Paralysis').replace(/^vulnerability to Blight$/i,'Weakness to Blight Disease');return [...ATTRS,...SKILLS,...EFFECTS,'Maximum Magicka'].find(k=>k.toLowerCase()===s.toLowerCase())||s;}
 function parse(text){
@@ -54,11 +77,22 @@ function condition(text,c){
  if(/throwing weapon/.test(text))return c.throwing;
  return null;
 }
-function defaultState(){return {version:1,name:'Unnamed outlander',choices:{races:'',signs:'',lineages:'',backgrounds:'',faiths:'',cultures:''},base:Object.fromEntries(ATTRS.map(k=>[k,null])),skillBase:Object.fromEntries(SKILLS.map(k=>[k,5])),active:{},context:{location:'indoors',time:'day',weather:'clear',clothed:true,drunk:false,offhand:true,throwing:false,fullMoon:false},rules:{magickaBase:1,healthMode:'creation',healthOverride:null,absorption:'independent',ward:'unresolved'}};}
-function sanitize(input,data){const s=defaultState();if(!input||typeof input!=='object')return s;s.name=String(input.name||s.name).slice(0,80);for(const k in s.choices)if(data[k].some(x=>x.id===input.choices?.[k]))s.choices[k]=input.choices[k];for(const k of ATTRS){const v=input.base?.[k];if(v!==null&&v!==''&&Number.isFinite(Number(v)))s.base[k]=Math.max(0,Math.min(1000,Number(v)));}for(const k of SKILLS){const v=input.skillBase?.[k];if(v!==null&&v!==undefined&&Number.isFinite(Number(v)))s.skillBase[k]=Math.max(0,Math.min(1000,Number(v)));}for(const [k,v]of Object.entries(input.active||{}))if(typeof v==='boolean')s.active[k]=v;for(const k in s.context){const v=input.context?.[k];if(typeof s.context[k]==='boolean'&&typeof v==='boolean')s.context[k]=v;}for(const [k,values]of Object.entries({location:['indoors','wild','city'],time:['day','night'],weather:['clear','cloudy']}))if(values.includes(input.context?.[k]))s.context[k]=input.context[k];for(const [k,values]of Object.entries({healthMode:['creation','base','override'],absorption:['independent','additive'],ward:['unresolved','int','pool']}))if(values.includes(input.rules?.[k]))s.rules[k]=input.rules[k];for(const k of ['magickaBase','healthOverride']){const v=input.rules?.[k];if(v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v)))s.rules[k]=Math.max(0,Math.min(10000,Number(v)));}return s;}
+function defaultState(){return {version:1,characterClass:defaultClass(),sex:'male',baseMode:'racial',name:'Unnamed outlander',choices:{races:'',signs:'',lineages:'',backgrounds:'',faiths:'',cultures:''},base:Object.fromEntries(ATTRS.map(k=>[k,null])),skillBase:Object.fromEntries(SKILLS.map(k=>[k,5])),active:{},context:{location:'indoors',time:'day',weather:'clear',clothed:true,drunk:false,offhand:true,throwing:false,fullMoon:false},rules:{magickaBase:1,healthMode:'creation',healthOverride:null,absorption:'independent',ward:'unresolved'}};}
+function sanitize(input,data){const s=defaultState();if(!input||typeof input!=='object')return s;s.name=String(input.name||s.name).slice(0,80);for(const k in s.choices)if(data[k].some(x=>x.id===input.choices?.[k]))s.choices[k]=input.choices[k];for(const k of ATTRS){const v=input.base?.[k];if(v!==null&&v!==''&&Number.isFinite(Number(v)))s.base[k]=Math.max(0,Math.min(1000,Number(v)));}for(const k of SKILLS){const v=input.skillBase?.[k];if(v!==null&&v!==undefined&&Number.isFinite(Number(v)))s.skillBase[k]=Math.max(0,Math.min(1000,Number(v)));}for(const [k,v]of Object.entries(input.active||{}))if(typeof v==='boolean')s.active[k]=v;for(const k in s.context){const v=input.context?.[k];if(typeof s.context[k]==='boolean'&&typeof v==='boolean')s.context[k]=v;}for(const [k,values]of Object.entries({location:['indoors','wild','city'],time:['day','night'],weather:['clear','cloudy']}))if(values.includes(input.context?.[k]))s.context[k]=input.context[k];for(const [k,values]of Object.entries({healthMode:['creation','base','override'],absorption:['independent','additive'],ward:['unresolved','int','pool']}))if(values.includes(input.rules?.[k]))s.rules[k]=input.rules[k];for(const k of ['magickaBase','healthOverride']){const v=input.rules?.[k];if(v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v)))s.rules[k]=Math.max(0,Math.min(10000,Number(v)));}s.sex=input.sex==='female'?'female':'male';s.baseMode=input.baseMode==='racial'||(input.baseMode!=='manual'&&ATTRS.every(k=>s.base[k]===null))?'racial':'manual';if(s.baseMode==='racial')applyRaceBase(data,s);s.characterClass=sanitizeClass(input.characterClass);return s;}
+function applyRaceBase(data,state){
+ const race=data.races.find(r=>r.id===state.choices.races);
+ const baseline=race?.baseAttributes?.[state.sex==='female'?'female':'male'];
+ state.base=Object.fromEntries(ATTRS.map(k=>[k,baseline?.[k]??null]));
+ state.baseMode='racial';
+ return Boolean(baseline);
+}
 function calculate(data,state){
  const selected=Object.fromEntries(Object.entries(state.choices).map(([k,id])=>[k,data[k].find(x=>x.id===id)]));
  const lines=[],mods=[],powers=[],review=[],constraints=[];
+ const characterClass=sanitizeClass(state.characterClass);
+ const classRecord={id:'CLASS',name:characterClass.name||'Custom class',url:CLASS_RULES_SOURCE};
+ const classCounts=Object.fromEntries(['favoured','major','minor'].map(g=>[g,characterClass[g].filter(Boolean).length]));
+ const classInfo={...characterClass,record:classRecord,counts:classCounts,hasChoices:Boolean(characterClass.specialization)||Object.values(classCounts).some(n=>n>0),complete:Boolean(characterClass.specialization)&&classCounts.favoured===2&&classCounts.major===5&&classCounts.minor===5};
  function add(record,raw,group='Modifier',scope='passive',powerId=null){
   const row={source:record.name,record:record.id,page:record.page,raw,group,scope,powerId,applied:false};lines.push(row);
   if(scope==='power'&&!state.active[powerId])return;
@@ -98,6 +132,9 @@ function calculate(data,state){
   const qualitative=group==='Rules'&&!/set to|random|shuffle|evened|capped|Fortify|Drain|\+\d|\-\d/.test(text);
   if(!qualitative&&!/^School:/.test(text)){review.push(row);row.unresolved=true;}
  }
+ for(const k of characterClass.favoured.filter(Boolean))add(classRecord,`+10 ${k}`,'Favoured attribute');
+ for(const group of ['major','minor'])for(const k of characterClass[group].filter(Boolean))add(classRecord,`+${characterClass.bonuses[group]} ${k}`,group==='major'?'Major skill':'Minor skill');
+ for(const k of SPECIALIZATIONS[characterClass.specialization]||[])add(classRecord,`+${characterClass.bonuses.specialization} ${k}`,`${characterClass.specialization} specialisation`);
  for(const record of Object.values(selected).filter(Boolean)){
   if(record.skills)for(const part of record.skills.split('·'))add(record,part.trim(),'Racial skill bonus');
   for(const sp of record.specials||[]){const isPower=sp.type==='Power'||sp.type==='Spell'||(!sp.type&&sp.effects.some(e=>/for \d+ sec|on Touch|on Target|School:/.test(e)));const id=record.id+':'+sp.name;if(isPower)powers.push({...sp,id,source:record.name});for(const raw of sp.effects)add(record,raw,sp.name,isPower?'power':'passive',id);}
@@ -125,7 +162,7 @@ function calculate(data,state){
  if(bg?.name==='Unhealing')warnings.push('Unhealing prevents Restore Health effects; listed regeneration sources do not restore health.');
  if(constraints.length)warnings.push('Background set/cap rules are applied after bonuses. The compendium does not specify script ordering.');
  if(selected.cultures)warnings.push('Culture bonuses assume faithful adherence to your culture.');
- return {selected,attrs,skills,derived,effects,mods,constraints,lines,powers,review,warnings,magickaFactor};
+ return {selected,classInfo,attrs,skills,derived,effects,mods,constraints,lines,powers,review,warnings,magickaFactor};
 }
-root.NemasEngine={ATTRS,SKILLS,canonical,parse,defaultState,sanitize,calculate};
+root.NemasEngine={ATTRS,SKILLS,CLASS_SKILLS,SPECIALIZATIONS,CLASS_RULES_SOURCE,defaultClass,sanitizeClass,setClassSelection,canonical,parse,defaultState,sanitize,applyRaceBase,calculate};
 })(globalThis);

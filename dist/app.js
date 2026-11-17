@@ -11,11 +11,15 @@ function persist(){try{localStorage.setItem(key,JSON.stringify(state));saveAvail
 function empty(title,body){return `<div class="empty-state"><div class="empty-icon">✧</div><strong>${title}</strong>${body}</div>`;}
 function init(){
  $('selectors').innerHTML=Object.entries(labels).map(([k,label],i)=>`<div class="choice"><label for="select-${k}">${String(i+1).padStart(2,'0')} &nbsp; ${label}<span>${k==='cultures'?'OPTIONAL':D[k].length+' OPTIONS'}</span></label><select id="select-${k}" data-choice="${k}"><option value="">${k==='cultures'?'No culture selected':'Choose '+label.toLowerCase()+'…'}</option>${[...D[k]].sort((a,b)=>a.name.localeCompare(b.name)).map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select><div id="detail-${k}" class="choice-detail"></div></div>`).join('');
+ $('detail-races').insertAdjacentHTML('beforebegin','<div id="race-sex-control" class="race-sex-control" hidden><label for="race-sex">Attribute variant</label><select id="race-sex"><option value="male">Male</option><option value="female">Female</option></select></div>');
  $('attributes').innerHTML=E.ATTRS.map((k,i)=>`<div class="attribute-row"><span><span class="muted" aria-hidden="true">${['♜','✧','◇','⌁','↗','◈','☷','✦'][i]}</span>${k}</span><input type="number" min="0" max="1000" step="1" placeholder="—" data-base="${k}" aria-label="Base ${k}"><span id="change-${k}" class="change">—</span><span id="total-${k}" class="total">—</span></div>`).join('');
- $('skills').innerHTML=E.SKILLS.map(k=>`<div class="skill-row"><label for="skill-${k.replaceAll(' ','-')}">${k}</label><input id="skill-${k.replaceAll(' ','-')}" type="number" min="0" max="1000" data-skill="${k}" aria-label="Base ${k}"><span id="skill-change-${k}" class="change"></span><span id="skill-total-${k}" class="total"></span></div>`).join('');
+ $('skills').innerHTML=E.SKILLS.map(k=>`<div class="skill-row"><label for="skill-${k.replaceAll(' ','-')}">${k}<small id="skill-rank-${k}" class="skill-rank"></small></label><input id="skill-${k.replaceAll(' ','-')}" type="number" min="0" max="1000" data-skill="${k}" aria-label="Base ${k}"><span id="skill-change-${k}" class="change"></span><span id="skill-total-${k}" class="total"></span><p id="skill-breakdown-${k}" class="skill-maths"></p></div>`).join('');
+ NemasClassUI.init({E,getState:()=>state,getResult:()=>result,update,notify});
  syncInputs();render();persist();
 }
 function syncInputs(){
+ NemasClassUI.sync();
+ $('race-sex').value=state.sex;
  $('build-name').value=state.name;for(const k in labels)$('select-'+k).value=state.choices[k];
  document.querySelectorAll('[data-base]').forEach(el=>el.value=state.base[el.dataset.base]??'');
  document.querySelectorAll('[data-skill]').forEach(el=>el.value=state.skillBase[el.dataset.skill]);
@@ -24,10 +28,15 @@ function syncInputs(){
 }
 function render(){
  result=E.calculate(D,state);
+ NemasClassUI.render();
  const ready=E.ATTRS.every(k=>state.base[k]!==null),count=Object.entries(state.choices).filter(([k,v])=>k!=='cultures'&&v).length;
  $('choice-count').textContent=`${count} / 5`;
  $('calculation-status').textContent=!ready?'SET YOUR BASE ATTRIBUTES':result.review.length?'PARTIAL TOTALS · SEE NOTES':'PLANNING ESTIMATE';
- $('baseline-callout').hidden=ready;
+ const race=result.selected.races;
+ $('race-sex-control').hidden=!race?.baseAttributes||E.ATTRS.every(k=>race.baseAttributes.male[k]===race.baseAttributes.female[k]);
+ $('restore-base').disabled=!race?.baseAttributes;
+ $('baseline-callout').hidden=ready&&!race;
+ $('baseline-description').textContent=race?(state.baseMode==='racial'?'Racial base attributes loaded automatically. ':'Custom base attributes. Use Restore race values to reload the baseline. ')+'Published baseline from '+race.attributeSource.label+'; provisional for your NEMAS load order. Class bonuses are added automatically; edit the base only for in-game corrections.':'Choose a race to fill its starting attributes automatically, or enter your own base values.';
  for(const k in labels){const x=result.selected[k];$('detail-'+k).innerHTML=x?`${esc(x.summary||`${x.specials?.length||0} racial or celestial traits. Inspect their effects below.`)}${x.requirement?`<br><strong>Requires: ${esc(x.requirement)}</strong>`:''}<br><a href="compendium.pdf#page=${x.page}" target="_blank" rel="noopener">${x.id} · Compendium p. ${x.page} ↗</a>`:'';}
  const defs=[['Health','#b77f6d','♥','Creation estimate · '+(state.rules.healthMode==='override'?'supplied base':'½ (STR + END)')],['Magicka','#7ca3bd','✧',fmt(result.magickaFactor)+'× INT + direct bonuses'],['Fatigue','#8da886','⌁','STR + END + AGI + WIL'],['Carry capacity','#b8a373','♜','5× STR · before Feather / Burden']];
  $('derived').innerHTML=defs.map(([k,color,icon,formula])=>`<div class="stat-card" style="--accent:${color}"><div class="stat-name">${k}<span aria-hidden="true" style="color:${color}">${icon}</span></div><div class="stat-value">${fmt(result.derived[k])}${k==='Carry capacity'?'<small>weight</small>':''}</div><div class="stat-line"></div><div class="stat-formula">${formula}</div></div>`).join('');
@@ -42,20 +51,21 @@ function render(){
  $('ledger-count').textContent=result.lines.length;
  renderLedger();
 }
-function renderLedger(){const q=$('ledger-search').value.toLowerCase().trim(),lines=result.lines.filter(x=>!q||[x.raw,x.source,x.group].join(' ').toLowerCase().includes(q));let html='';for(const x of Object.values(result.selected).filter(Boolean)){const group=lines.filter(l=>l.record===x.id);if(!group.length)continue;html+=`<div class="ledger-group"><header><h3>${esc(x.name)}</h3><a href="compendium.pdf#page=${x.page}" target="_blank" rel="noopener">${x.id} · p. ${x.page} ↗</a></header>${group.map(l=>{let status=l.unresolved?'Review':l.applied?'Applied':l.scope==='target'?'Target effect':l.scope==='power'?'Inactive power':l.scope==='conditional'?'Condition off':'Rule / grant';return `<div class="ledger-line"><div class="raw">${esc(l.raw)}<small>${esc(l.group)}</small></div><span class="badge ${l.unresolved?'review':l.applied?'':'inactive'}">${status}</span></div>`;}).join('')}</div>`;}$('ledger').innerHTML=html||empty(q?'No matching effects':'An unwritten story',q?'Try a different effect or source name.':'Select your origins to reveal every bonus, trade-off and special rule.');}
+function renderLedger(){const q=$('ledger-search').value.toLowerCase().trim(),lines=result.lines.filter(x=>!q||[x.raw,x.source,x.group].join(' ').toLowerCase().includes(q));let html='';for(const x of [result.classInfo.record,...Object.values(result.selected).filter(Boolean)]){const group=lines.filter(l=>l.record===x.id);if(!group.length)continue;html+=`<div class="ledger-group"><header><h3>${esc(x.name)}</h3><a href="${x.url||'compendium.pdf#page='+x.page}" target="_blank" rel="noopener">${x.id==='CLASS'?'Class rules':x.id+' / p. '+x.page}</a></header>${group.map(l=>{let status=l.unresolved?'Review':l.applied?'Applied':l.scope==='target'?'Target effect':l.scope==='power'?'Inactive power':l.scope==='conditional'?'Condition off':'Rule / grant';return `<div class="ledger-line"><div class="raw">${esc(l.raw)}<small>${esc(l.group)}</small></div><span class="badge ${l.unresolved?'review':l.applied?'':'inactive'}">${status}</span></div>`;}).join('')}</div>`;}$('ledger').innerHTML=html||empty(q?'No matching effects':'An unwritten story',q?'Try a different effect or source name.':'Select your origins to reveal every bonus, trade-off and special rule.');}
 function update(){render();persist();}
 document.addEventListener('change',ev=>{const el=ev.target;
- if(el.dataset.choice){state.choices[el.dataset.choice]=el.value;update();}
- if(el.dataset.base){state.base[el.dataset.base]=el.value===''?null:Math.max(0,Math.min(1000,Number(el.value)||0));el.value=state.base[el.dataset.base]??'';update();}
+ if(el.dataset.choice){state.choices[el.dataset.choice]=el.value;if(el.dataset.choice==='races'){E.applyRaceBase(D,state);syncInputs();}update();}
+ if(el.id==='race-sex'){state.sex=el.value;E.applyRaceBase(D,state);syncInputs();update();}
+ if(el.dataset.base){state.baseMode='manual';state.base[el.dataset.base]=el.value===''?null:Math.max(0,Math.min(1000,Number(el.value)||0));el.value=state.base[el.dataset.base]??'';update();}
  if(el.dataset.skill){state.skillBase[el.dataset.skill]=Math.max(0,Math.min(1000,Number(el.value)||0));el.value=state.skillBase[el.dataset.skill];update();}
  if(el.dataset.context){state.context[el.dataset.context]=el.type==='checkbox'?el.checked:el.value;update();}
  if(el.dataset.power){state.active[el.dataset.power]=el.checked;update();}
 });
-document.addEventListener('input',ev=>{const el=ev.target;if(el.dataset.base){state.base[el.dataset.base]=el.value===''?null:Math.max(0,Math.min(1000,Number(el.value)||0));update();}if(el.dataset.skill){state.skillBase[el.dataset.skill]=Math.max(0,Math.min(1000,Number(el.value)||0));update();}});
+document.addEventListener('input',ev=>{const el=ev.target;if(el.dataset.base){state.baseMode='manual';state.base[el.dataset.base]=el.value===''?null:Math.max(0,Math.min(1000,Number(el.value)||0));update();}if(el.dataset.skill){state.skillBase[el.dataset.skill]=Math.max(0,Math.min(1000,Number(el.value)||0));update();}});
 $('build-name').addEventListener('input',()=>{state.name=$('build-name').value;persist();});
 $('ledger-search').addEventListener('input',renderLedger);
 $('edit-base').onclick=()=>document.querySelector('[data-base]').focus();
-$('sample-base').onclick=()=>{state.base=Object.fromEntries(E.ATTRS.map(k=>[k,40]));syncInputs();update();notify('Example values loaded: 40 in each attribute. These are not racial presets.');};
+$('restore-base').onclick=()=>{E.applyRaceBase(D,state);syncInputs();update();notify('Racial base attributes restored.');};
 for(const [id,k]of Object.entries({'magicka-base':'magickaBase','health-mode':'healthMode','health-override':'healthOverride','absorption-rule':'absorption','ward-rule':'ward'}))$(id).addEventListener('change',()=>{const el=$(id);state.rules[k]=el.type==='number'?(el.value===''?(k==='magickaBase'?1:null):Math.max(0,Math.min(10000,Number(el.value)||0))):el.value;syncInputs();update();});
 function activateTab(name){document.querySelectorAll('[data-tab]').forEach(el=>{const active=el.dataset.tab===name;el.setAttribute('aria-selected',String(active));el.tabIndex=active?0:-1;$(el.dataset.tab+'-panel').hidden=!active;});}
 document.querySelectorAll('[data-tab]').forEach(el=>{el.onclick=()=>activateTab(el.dataset.tab);el.onkeydown=ev=>{const tabs=[...document.querySelectorAll('[data-tab]')];let i=tabs.indexOf(el);if(ev.key==='ArrowRight')i=(i+1)%tabs.length;else if(ev.key==='ArrowLeft')i=(i+tabs.length-1)%tabs.length;else if(ev.key==='Home')i=0;else if(ev.key==='End')i=tabs.length-1;else return;ev.preventDefault();activateTab(tabs[i].dataset.tab);tabs[i].focus();};});
