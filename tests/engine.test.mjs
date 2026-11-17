@@ -10,9 +10,9 @@ function effect(r,k){return r.effects.find(e=>e.key===k);}
 test('all 359 compendium entries are present with unique IDs and source pages',()=>{const records=Object.values(D).flat();assert.equal(records.length,359);assert.equal(new Set(records.map(x=>x.id)).size,359);assert.ok(records.every(x=>x.page>=5&&x.page<=84));assert.equal(D.lineages.length,81);});
 test('unknown bases remain unknown; numeric effects still calculate',()=>{const s=E.defaultState();s.choices.signs=D.signs.find(x=>x.name==='The Atronach').id;const r=E.calculate(D,s);assert.equal(r.derived.Magicka,null);assert.equal(r.attrs.Intelligence,null);assert.ok(Math.abs(effect(r,'Spell Absorption').value-35)<1e-10);});
 test('plain baseline derives the four core resources',()=>{assert.deepEqual(build().derived,{Health:40,Magicka:40,Fatigue:160,'Carry capacity':200});});
-test('race, sign, lineage, background, faith and culture stack transparently',()=>{const r=build({races:'Breton',signs:'The Mage',lineages:'Half-Breton',backgrounds:'Adopted by Nobles',faiths:'Julianos',cultures:'Magocratic'});assert.equal(r.attrs.Intelligence,60);assert.equal(r.attrs.Willpower,55);assert.equal(r.attrs.Strength,30);assert.equal(r.magickaFactor,3);assert.equal(r.derived.Magicka,180);assert.equal(r.derived.Health,30);assert.equal(r.skills.Conjuration,20);assert.equal(r.skills.Alchemy,20);});
+test('race, sign, lineage, background, faith and culture stack transparently',()=>{const r=build({races:'Breton',signs:'The Mage',lineages:'Half-Breton',backgrounds:'Adopted by Nobles',faiths:'Julianos',cultures:'Magocratic'});assert.equal(r.attrs.Intelligence,60);assert.equal(r.attrs.Willpower,55);assert.equal(r.attrs.Strength,30);assert.equal(r.magickaFactor,3);assert.equal(r.derived.Magicka,180);assert.equal(r.derived.Health,40);assert.equal(r.skills.Conjuration,20);assert.equal(r.skills.Alchemy,20);});
 test('spell absorption uses independent rolls and supports explicit additive override',()=>{const choices={races:'Redguard',signs:'The Atronach',lineages:'Mazken',faiths:'Magnus'};const expected=100*(1-.85*.65*.95*.9);assert.ok(Math.abs(effect(build(choices),'Spell Absorption').value-expected)<1e-9);assert.equal(effect(build(choices,s=>s.rules.absorption='additive'),'Spell Absorption').value,65);});
-test('negative flat health is not discarded',()=>{const r=build({backgrounds:'Blessed by Molag Bal'});assert.equal(r.attrs.Endurance,20);assert.equal(r.derived.Health,0);assert.equal(r.derived.Magicka,90);});
+test('direct Health penalties still apply separately from excluded background attributes',()=>{const r=build({backgrounds:'Blessed by Molag Bal'});assert.equal(r.attrs.Endurance,20);assert.equal(r.derived.Health,10);assert.equal(r.derived.Magicka,90);});
 test('Drunkard penalties apply only when sober',()=>{const r=build({backgrounds:'Drunkard'});assert.equal(r.attrs.Agility,10);assert.equal(r.derived.Fatigue,95);const drunk=build({backgrounds:'Drunkard'},s=>s.context.drunk=true);assert.equal(drunk.attrs.Agility,40);assert.equal(drunk.derived.Fatigue,175);});
 test('Night Mage applies percentage modifiers to intelligence by time',()=>{assert.equal(build({backgrounds:'Night Mage'}).attrs.Intelligence,32);assert.equal(build({backgrounds:'Night Mage'},s=>s.context.time='night').attrs.Intelligence,48);});
 test('conditional skill bonuses switch rather than accumulating',()=>{assert.equal(build({backgrounds:'Agoraphobic'}).skills.Alchemy,10);assert.equal(build({backgrounds:'Agoraphobic'},s=>s.context.location='wild').skills.Alchemy,0);});
@@ -120,4 +120,55 @@ test('class, specialisation and custom rules survive serialization while legacy 
 test('class modifications have complete ledger provenance and do not mutate data or state',()=>{
  const s=E.defaultState();E.setClassSelection(s,'favoured',0,'Luck');E.setClassSelection(s,'major',0,'Conjuration');s.characterClass.specialization='Magic';const before=JSON.stringify(s),dataBefore=JSON.stringify(D);const r=E.calculate(D,s);
  assert.equal(r.lines.filter(x=>x.record==='CLASS').length,11);assert.ok(r.lines.filter(x=>x.record==='CLASS').every(x=>x.applied));assert.equal(r.classInfo.record.url,E.CLASS_RULES_SOURCE);assert.equal(JSON.stringify(s),before);assert.equal(JSON.stringify(D),dataBefore);
+});
+
+test('Bejeha keeps its Endurance bonus but starting Health remains 45',()=>{
+ const r=build({races:'Argonian',cultures:'Bejeha'},s=>{
+  E.applyRaceBase(D,s);s.characterClass.favoured=['Strength','Endurance'];
+ });
+ assert.equal(r.attrs.Strength,50);assert.equal(r.attrs.Endurance,45);
+ assert.equal(r.derived.Health,45);
+ const withoutCulture=build({races:'Argonian'},s=>{E.applyRaceBase(D,s);s.characterClass.favoured=['Strength','Endurance'];});
+ assert.equal(r.derived.Health,withoutCulture.derived.Health);
+ assert.equal(r.derived.Fatigue,withoutCulture.derived.Fatigue+10);
+});
+
+for(const category of ['backgrounds','cultures','lineages','faiths'])test(`${category} attribute changes and constraints do not affect starting Health`,()=>{
+ const data=structuredClone(D),id='TEST';
+ data[category].push({id,name:'Health regression fixture',groups:[{label:'Modifiers',effects:['+20 Strength','Endurance +50%','+10 Intelligence','All your attributes are set to 10']}]});
+ const s=E.defaultState();s.base=Object.fromEntries(E.ATTRS.map(k=>[k,40]));s.characterClass.favoured=['Endurance','Intelligence'];s.choices[category]=id;
+ const r=E.calculate(data,s);
+ assert.equal(r.derived.Health,45);assert.equal(r.attrs.Strength,10);assert.equal(r.attrs.Endurance,10);
+ assert.equal(r.derived.Magicka,10);assert.equal(r.derived.Fatigue,40);assert.equal(r.derived['Carry capacity'],50);
+ s.rules.healthMode='base';assert.equal(E.calculate(data,s).derived.Health,40);
+ s.rules.healthMode='override';s.rules.healthOverride=123;assert.equal(E.calculate(data,s).derived.Health,123);
+ s.rules.healthMode='creation';s.base.Strength=null;assert.equal(E.calculate(data,s).derived.Health,null);
+});
+
+test('God-Eater retains 400 Magicka with all six origins and favoured Intelligence / Endurance',()=>{
+ const r=build({races:'Breton',signs:'The Atronach',backgrounds:'Warped Mind',cultures:'Osternish',faiths:'God of Worms',lineages:'Xivilai'},s=>{
+  E.applyRaceBase(D,s);s.characterClass.name='God-Eater';s.characterClass.specialization='Magic';s.characterClass.favoured=['Intelligence','Endurance'];
+ });
+ assert.equal(r.attrs.Intelligence,100);assert.equal(r.magickaFactor,4);assert.equal(r.derived.Magicka,400);
+ assert.equal(r.derived.Health,42.5);assert.equal(r.attrs.Strength,30);assert.equal(r.attrs.Endurance,45);
+});
+
+test('passive race and birthsign Fortify effects do not increase starting Health',()=>{
+ const data=structuredClone(D);
+ data.races.push({id:'TEST-RACE',name:'Race fixture',specials:[{name:'Constitution',type:'Ability',effects:['+10 Endurance']}]});
+ data.signs.push({id:'TEST-SIGN',name:'Sign fixture',specials:[{name:'Strength',type:'Ability',effects:['+10 Strength']}]});
+ const s=E.defaultState();s.base=Object.fromEntries(E.ATTRS.map(k=>[k,40]));s.choices.races='TEST-RACE';s.choices.signs='TEST-SIGN';s.characterClass.favoured=['Endurance','Strength'];
+ const r=E.calculate(data,s);assert.equal(r.derived.Health,50);assert.equal(r.attrs.Strength,60);assert.equal(r.attrs.Endurance,60);
+});
+
+test('Pokes-his-spear screenshot matches attributes, resources and every standard skill',()=>{
+ const r=build({races:'Argonian',signs:'The Warrior',lineages:'Horwalli',cultures:'Bejeha',backgrounds:'Huntsman',faiths:'The Hist'},s=>{
+  E.applyRaceBase(D,s);s.name='Pokes-his-spear';s.characterClass.name='Adventurer';s.characterClass.specialization='Combat';s.characterClass.favoured=['Strength','Endurance'];
+  s.characterClass.major=['Spear','Athletics','Unarmored','Mysticism','Alteration'];
+  s.characterClass.minor=['Marksman','Alchemy','Restoration','Security','Medium Armor'];
+ });
+ assert.deepEqual(r.attrs,{Strength:70,Intelligence:25,Willpower:35,Agility:50,Speed:55,Endurance:45,Personality:15,Luck:40});
+ assert.deepEqual(r.derived,{Health:45,Magicka:25,Fatigue:200,'Carry capacity':350});
+ const expected={Spear:80,Athletics:50,Unarmored:40,Mysticism:45,Alteration:30,Marksman:20,Alchemy:20,Restoration:15,Security:20,'Medium Armor':20,Block:10,Armorer:5,'Heavy Armor':5,'Blunt Weapon':10,'Long Blade':5,Axe:10,Enchant:5,Destruction:5,Illusion:15,Conjuration:5,Sneak:10,Acrobatics:5,'Light Armor':5,'Short Blade':5,Mercantile:10,Speechcraft:0,'Hand-to-Hand':5,Bardcraft:5};
+ assert.deepEqual(r.skills,expected);
 });
