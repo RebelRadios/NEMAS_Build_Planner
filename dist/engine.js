@@ -3,6 +3,9 @@
 const ATTRS=['Strength','Intelligence','Willpower','Agility','Speed','Endurance','Personality','Luck'];
 const SKILLS=['Block','Armorer','Medium Armor','Heavy Armor','Blunt Weapon','Long Blade','Axe','Spear','Athletics','Enchant','Destruction','Alteration','Illusion','Conjuration','Mysticism','Restoration','Alchemy','Unarmored','Security','Sneak','Acrobatics','Light Armor','Short Blade','Marksman','Mercantile','Speechcraft','Hand-to-Hand','Bardcraft'];
 const WEAPONS=['Blunt Weapon','Long Blade','Axe','Spear','Short Blade','Marksman','Hand-to-Hand'];
+// Offensive group interpretation: weapon skills (including unarmed) + Destruction.
+// The compendium names this group without enumerating its members.
+const OFFENSIVE=[...WEAPONS,'Destruction'];
 const ARMOR=['Light Armor','Medium Armor','Heavy Armor'];
 const STEALTH=['Security','Sneak','Acrobatics','Light Armor','Short Blade','Marksman','Mercantile','Speechcraft','Hand-to-Hand'];
 const CLASS_SKILLS=SKILLS.filter(k=>k!=='Bardcraft');
@@ -51,8 +54,8 @@ function parse(text){
  }
  if((m=s.match(/^([+-]\d+(?:\.\d+)?)(%|\s*(?:pts?|points?))? (.+)$/i))){
    const key=m[3].replace(/^to /,'');
-   if(/^all (?:skills and attributes|Stealth skills|weapon skills|Weapon and Armor skills)$/i.test(key)){
-    const keys=/skills and attributes/i.test(key)?[...ATTRS,...SKILLS]:/stealth/i.test(key)?STEALTH:/armor/i.test(key)?[...WEAPONS,...ARMOR]:WEAPONS;
+   if(/^all (?:skills and attributes|Stealth skills|weapon skills|Weapon and Armor skills|offensive skills)$/i.test(key)){
+    const keys=/skills and attributes/i.test(key)?[...ATTRS,...SKILLS]:/offensive/i.test(key)?OFFENSIVE:/stealth/i.test(key)?STEALTH:/armor/i.test(key)?[...WEAPONS,...ARMOR]:WEAPONS;
     return keys.map(k=>({key:k,value:+m[1],op:'add',unit:'pts'}));
    }
    if(/^all skills$/i.test(key))return SKILLS.map(k=>({key:k,value:+m[1],op:'add',unit:'pts'}));
@@ -162,6 +165,7 @@ function calculate(data,state){
  let healthBase=state.rules.healthMode==='override'?state.rules.healthOverride:healthAttrs.Strength===null||healthAttrs.Endurance===null?null:(healthAttrs.Strength+healthAttrs.Endurance)/2;
  const derived={Health:healthBase===null?null:Math.max(0,healthBase+total('Health')),Magicka:attrs.Intelligence===null?null:Math.max(0,(attrs.Intelligence*magickaFactor+total('Magicka'))*(mods.some(m=>m.key==='Magicka pool factor')?3:1)),Fatigue:sum(['Strength','Endurance','Agility','Willpower'])===null?null:Math.max(0,sum(['Strength','Endurance','Agility','Willpower'])+total('Fatigue')),'Carry capacity':attrs.Strength===null?null:attrs.Strength*5};
  const warnings=[];const bg=selected.backgrounds;
+ if(bg?.name==='Bulwark')warnings.push('Bulwark: the -10 offensive-skill penalty is applied to Blunt Weapon, Long Blade, Axe, Spear, Short Blade, Marksman, Hand-to-Hand and Destruction. This group is an interpretation: the compendium does not enumerate its members. Half experience gain is recorded in the ledger; it does not halve starting skills.');
  if(bg?.requirement){const r=selected.races?.name||'';const req=bg.requirement;let valid=true;if(req.includes('Stunted'))valid=effects.some(e=>e.key==='Stunted Magicka');else if(req==='Khajiit or Argonian only')valid=/Khajiit|khajiit|Cat|Jaguar|Panther|Argonian/.test(r);else {const map={'Nords only':/^Nord$/,'Khajiits only':/Khajiit|khajiit|Cat|Jaguar|Panther/,'Argonians only':/^Argonian$/,'Wood Elves only':/^Wood Elf$/,'Orcs only':/Orc/,'High Elves only':/^High Elf$/,'Dark Elves only':/^Dark Elf$/,'Redguards only':/^Redguard$/,'Bretons only':/^Breton$/};valid=map[req]?.test(r)??false;}if(!valid)warnings.push(`${bg.name} requires: ${req}. This combination is not confirmed eligible.`);}
  if(bg?.name==='Unhealing')warnings.push('Unhealing prevents Restore Health effects; listed regeneration sources do not restore health.');
  if(constraints.length)warnings.push('Background set/cap rules are applied after bonuses. The compendium does not specify script ordering.');

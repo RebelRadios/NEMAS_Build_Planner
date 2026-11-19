@@ -7,6 +7,25 @@ const context={window:{}};vm.runInNewContext(fs.readFileSync(new URL('../dist/da
 const D=JSON.parse(JSON.stringify(context.window.NEMAS_DATA)),E=globalThis.NemasEngine;
 function build(choices={},edit=()=>{}){const s=E.defaultState();s.base=Object.fromEntries(E.ATTRS.map(k=>[k,40]));for(const [k,name]of Object.entries(choices)){const entry=D[k].find(x=>x.name===name);assert.ok(entry,`${k}: ${name}`);s.choices[k]=entry.id;}edit(s);return E.calculate(D,s);}
 function effect(r,k){return r.effects.find(e=>e.key===k);}
+
+test('Bulwark subtracts ten from the interpreted offensive group and preserves defensive bonuses',()=>{
+ const r=build({backgrounds:'Bulwark'},s=>{for(const k of E.SKILLS)s.skillBase[k]=40;});
+ const offensive=['Blunt Weapon','Long Blade','Axe','Spear','Short Blade','Marksman','Hand-to-Hand','Destruction'];
+ for(const k of E.SKILLS)assert.equal(r.skills[k],offensive.includes(k)?30:['Block','Conjuration','Restoration'].includes(k)?55:40,k);
+ assert.equal(r.attrs.Endurance,55);assert.equal(r.derived.Health,60);
+ const line=r.lines.find(l=>l.raw==='-10 to all offensive skills');assert.ok(line.applied);assert.ok(!line.unresolved);
+ assert.equal(r.mods.filter(m=>m.record==='B23'&&m.value===-10).length,8);
+ assert.ok(!r.review.some(l=>l.raw==='-10 to all offensive skills'));
+ assert.ok(r.warnings.some(w=>w.includes('group is an interpretation')));
+ assert.ok(r.lines.some(l=>l.raw==='Offensive skills gain only half as much experience'));
+});
+
+test('Bulwark combines with racial and class bonuses before the zero floor and clears on replacement',()=>{
+ const s=E.defaultState();s.choices.races='R01';E.applyRaceBase(D,s);s.choices.backgrounds='B23';s.characterClass.specialization='Combat';s.characterClass.major[0]='Spear';s.characterClass.minor[0]='Destruction';
+ const r=E.calculate(D,s);assert.equal(r.skills.Spear,35);assert.equal(r.skills.Destruction,5);assert.equal(r.skills.Marksman,0);assert.equal(r.skills.Block,25);
+ s.choices.backgrounds='';const cleared=E.calculate(D,s);assert.equal(cleared.skills.Spear,45);assert.equal(cleared.skills.Destruction,15);assert.equal(cleared.skills.Marksman,5);assert.equal(cleared.skills.Block,10);
+ s.choices.backgrounds='B23';assert.deepEqual(E.calculate(D,E.sanitize(JSON.parse(JSON.stringify(s)),D)).skills,r.skills);
+});
 test('all 359 compendium entries are present with unique IDs and source pages',()=>{const records=Object.values(D).flat();assert.equal(records.length,359);assert.equal(new Set(records.map(x=>x.id)).size,359);assert.ok(records.every(x=>x.page>=5&&x.page<=84));assert.equal(D.lineages.length,81);});
 test('unknown bases remain unknown; numeric effects still calculate',()=>{const s=E.defaultState();s.choices.signs=D.signs.find(x=>x.name==='The Atronach').id;const r=E.calculate(D,s);assert.equal(r.derived.Magicka,null);assert.equal(r.attrs.Intelligence,null);assert.ok(Math.abs(effect(r,'Spell Absorption').value-35)<1e-10);});
 test('plain baseline derives the four core resources',()=>{assert.deepEqual(build().derived,{Health:40,Magicka:40,Fatigue:160,'Carry capacity':200});});

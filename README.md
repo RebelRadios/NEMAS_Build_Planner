@@ -38,3 +38,9 @@ Legacy saved builds retain their custom base values and receive an empty class. 
 ## Verification
 
 Automated coverage includes all 359 entries and focused combinations for positive/negative modifiers, missing bases, variable effects, power toggles, conditional skills, absorption stacking, restrictions, import validation and replacement rules. Browser visual verification depends on preview access in the host environment.
+
+## Bulwark offensive-skill penalty
+
+Bulwark now applies its -10 penalty to Blunt Weapon, Long Blade, Axe, Spear, Short Blade, Marksman, Hand-to-Hand and Destruction. This membership is an explicit planning interpretation: the compendium and the mod description name offensive skills without enumerating them, and the installed script has not been verified. The interpretation is shown in calculation notes. Class and racial bonuses combine with the penalty before the zero floor; half experience gain is a progression rule retained in the ledger and does not halve starting values.
+
+Penalty source: https://github.com/OpenMW-Mod-Collection/BoonsAndBurdens#bulwark (checked 19 November 2026).
